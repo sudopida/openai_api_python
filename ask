@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 # Replace 'My API Key' with your actual OpenAI API key
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="My API Key")
 
 
 def ask_openai():
