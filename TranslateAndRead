@@ -1,0 +1,38 @@
+from openai import OpenAI
+import pyttsx3
+
+# Replace 'My API Key' with your actual OpenAI API key
+client = OpenAI(api_key="My API Key")
+
+question = input("Please enter the ungrammatical statement: ")
+response = client.chat.completions.create(
+  model="gpt-3.5-turbo",
+  messages=[
+    {
+      "role": "system",
+      "content": "You will be provided with statements, and your task is to translate them to Chinese."
+    },
+    {
+      "role": "user",
+      "content": question,
+    }
+  ],
+  temperature=0,
+  max_tokens=256
+)
+translated_text = response.choices[0].message.content
+print("Translated statement:", translated_text)
+
+# Initialize the TTS engine
+engine = pyttsx3.init()
+
+# Set properties before adding anything to say
+engine.setProperty('rate', 150)  # Speed of speech
+engine.setProperty('volume', 0.9)  # Volume (0.0 to 1.0)
+
+# Say the translated text and run the TTS engine
+engine.say(translated_text)
+engine.runAndWait()
+
+
+
