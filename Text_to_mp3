@@ -1,0 +1,48 @@
+import os
+import random
+import string
+from pathlib import Path
+from tkinter import Tk, filedialog
+from openai import OpenAI
+
+# Replace 'My API Key' with your actual OpenAI API key
+client = OpenAI(api_key="My API Key")
+
+def text_to_speech_from_file():
+  # Hide the root Tkinter window
+  root = Tk()
+  root.withdraw()
+
+  # Ask the user to select a text file
+  file_path = filedialog.askopenfilename(title="Select a text file", filetypes=[("Text files", "*.txt")])
+  if not file_path:
+    return "No file selected."
+
+  # Read the content of the file
+  with open(file_path, 'r') as file:
+    text_content = file.read()
+
+  # Generate a random tail for the filename
+  random_tail = ''.join(random.choices(string.ascii_lowercase + string.digits, k=4))
+
+  # Generate the new file path with the random tail
+  base_path = Path(file_path).stem
+  dir_path = Path(file_path).parent
+  speech_file_name = f"{base_path}_{random_tail}.mp3"
+  speech_file_path = dir_path / speech_file_name
+
+  # Use the TTS model to convert the text to speech
+  response = client.audio.speech.create(
+    model="tts-1-hd",  # Hypothetical TTS model
+    voice="echo",  # Hypothetical voice option
+    input=text_content  # The text you want to convert to speech
+  )
+
+  # Save the speech audio to a file
+  response.stream_to_file(speech_file_path)
+
+  return f"The audio file has been saved at {speech_file_path}"
+
+
+# Example usage
+print(text_to_speech_from_file())
