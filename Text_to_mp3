@@ -19,7 +19,7 @@ def text_to_speech_from_file():
     return "No file selected."
 
   # Read the content of the file
-  with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
     text_content = file.read()
 
   # Generate a random tail for the filename
