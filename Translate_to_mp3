@@ -1,0 +1,47 @@
+from pathlib import Path
+from openai import OpenAI
+
+# Replace 'My API Key' with your actual OpenAI API key
+client = OpenAI(api_key="My API Key")
+
+
+def ask_openai_and_convert_to_speech(question):
+  # Use the chat model to get a translation
+  chat_completion = client.chat.completions.create(
+    messages=[
+      {
+        "role": "system",
+        "content": "You will be provided with statements, and your task is to translate them into standard English."
+      },
+      {
+        "role": "user",
+        "content": question,
+      }
+    ],
+    model="gpt-3.5-turbo",  # Confirm this is the correct model for your use case
+  )
+
+  # Get the translated text from the response
+  translated_text = chat_completion.choices[0].message.content
+  print("Translated statement:", translated_text)
+
+  # Specify the path for the speech file
+  speech_file_path = Path(__file__).parent / "speech.mp3"
+
+  # Use the hypothetical TTS model to convert the text to speech
+  response = client.audio.speech.create(
+    model="tts-1",  # Hypothetical TTS model
+    voice="alloy",  # Hypothetical voice option
+    input=translated_text  # The text you want to convert to speech
+  )
+
+  # Save the speech audio to a file
+  response.stream_to_file(speech_file_path)
+
+  return translated_text, speech_file_path
+
+
+# Example usage
+question = input("Please enter the ungrammatical statement: ")
+translation, audio_path = ask_openai_and_convert_to_speech(question)
+print(f"The translated text has been saved to speech at {audio_path}")
